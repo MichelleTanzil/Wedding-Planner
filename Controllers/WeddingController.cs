@@ -28,6 +28,26 @@ namespace wedding_planner.Controllers
       .ThenInclude(we => we.User)
       .Include(wedding => wedding.Creater)
       .ToList();
+
+      List<int> WeddingsToDelete = new List<int>();
+      DateTime CurrentTime = DateTime.Now;
+      foreach (var wedding in AllWeddings)
+      {
+        if (wedding.WeddingDate < CurrentTime)
+        {
+          WeddingsToDelete.Add(wedding.WeddingId);
+        }
+      }
+      if (WeddingsToDelete.Count > 0)
+      {
+        foreach (var wedding in WeddingsToDelete)
+        {
+          Wedding WeddingToDelete = dbContext.Weddings.FirstOrDefault(w => w.WeddingId == wedding);
+          dbContext.Weddings.Remove(WeddingToDelete);
+          dbContext.SaveChanges();
+        }
+
+      }
       int LoggedUser = (int)HttpContext.Session.GetInt32("uid");
       ViewBag.LoggedUser = LoggedUser;
       ViewBag.User = dbContext.Users.FirstOrDefault(u => u.UserId == (int)HttpContext.Session.GetInt32("uid"));
@@ -147,7 +167,7 @@ namespace wedding_planner.Controllers
       int uid = (int)HttpContext.Session.GetInt32("uid");
       User LoggedUser = dbContext.Users.FirstOrDefault(u => u.UserId == uid);
 
-      UserWedding UserWeddingToDelete = dbContext.UsersWeddings.FirstOrDefault(uw => uw.WeddingId == weddingid && uw.UserId == uid );
+      UserWedding UserWeddingToDelete = dbContext.UsersWeddings.FirstOrDefault(uw => uw.WeddingId == weddingid && uw.UserId == uid);
       dbContext.UsersWeddings.Remove(UserWeddingToDelete);
       dbContext.SaveChanges();
       return RedirectToAction("Success");

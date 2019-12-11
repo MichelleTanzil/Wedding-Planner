@@ -22,20 +22,10 @@
         <td>@wedding.RSVP.Count</td>
         @if(wedding.Creater.UserId == ViewBag.LoggedUser)
         {
-          if(wedding.RSVP.Exists(w => w.UserId == ViewBag.LoggedUser))
-          {
             <td>
               <form asp-action="DeleteWedding" asp-controller="Wedding" asp-route-weddingid="@wedding.WeddingId" method="post">
                 <button class="btn btn-danger">Delete</button>
               </form></td>
-          }
-          else
-          {
-            <td>
-              <form asp-action="DeleteWedding" asp-controller="Wedding" asp-route-weddingid="@wedding.WeddingId" method="post">
-                <button class="btn btn-danger">Delete</button>
-              </form></td>
-          }
         }
         else
         {
